@@ -1,69 +1,26 @@
 package plugin;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.World.Environment;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
 import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.block.Dispenser;
-import org.bukkit.block.PistonMoveReaction;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.type.Door;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftLivingEntity;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Monster;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPistonEvent;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPistonRetractEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.generator.ChunkGenerator;
-import org.bukkit.generator.ChunkGenerator.BiomeGrid;
-import org.bukkit.generator.ChunkGenerator.ChunkData;
-import org.bukkit.inventory.AnvilInventory;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.Lever;
-import org.bukkit.material.MaterialData;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.noise.SimplexOctaveGenerator;
-
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_16_R3.EntityInsentient;
-
-import java.util.Random;
-
-import javax.annotation.Nonnull;
-
-import org.bukkit.World;
-import org.bukkit.generator.ChunkGenerator;
 
 
 
@@ -74,21 +31,87 @@ public class Main extends JavaPlugin implements Listener {
 	   public void onEnable() {
         PluginManager manager = getServer().getPluginManager();
         manager.registerEvents(this, this);
+        
+        
+        setups1x(this);
+   
+        
+        
+        
+        
+        reloadDatas1x();
+    
+        
+        if (mobnammx.get("data.doors") != null) {
+        	
+        	
+        	ArrayList<Location> lo = (ArrayList<Location> ) mobnammx.get("data.doors");
+        	
+        	for (Location lx : lo) {
+        		doors.add(lx.getBlock());
+        	}
+        	
+        	
+        }
+        if (mobnammx.get("data.keys") != null) {
+        	key = (ArrayList<ItemStack> ) mobnammx.get("data.keys");
+        	
+        }
+        
 	}
 	
 	
 	@Override
 	public void onDisable() {
-		for (ItemStack keys : key) {
-		ItemStack is = new ItemStack(Material.TRIPWIRE_HOOK);
-		 ItemMeta testEnchantMeta = is.getItemMeta();
-		 keys.setItemMeta(testEnchantMeta);
-		 
-	}
+		
+		ArrayList<Location> lo = new ArrayList<Location>();
+		for (Block door : doors) {
+		  lo.add(door.getLocation());
+		}
+		mobnammx.set("data.doors", lo);
+		
+		mobnammx.set("data.keys", key);
+		saveDatas1x();
 	}
 	
 
-     
+	  public FileConfiguration mobnammx;
+	   public File mobnamfx = new File(this.getDataFolder(), "x.yml");
+
+	    public void setups1x(Plugin p) {
+	        if (!p.getDataFolder().exists()) {
+	            p.getDataFolder().mkdir();
+	        }
+
+	        mobnamfx = new File(p.getDataFolder(), "x.yml");
+
+	        if (!mobnamfx.exists()) {
+	            try {
+	            	mobnamfx.createNewFile();
+	            } catch (IOException e) {
+	                Bukkit.getServer().getLogger().severe(ChatColor.RED + "Could not create x.yml!");
+	            }
+	        }
+
+	       YamlConfiguration data = YamlConfiguration.loadConfiguration(mobnamfx);
+	    }
+
+	    public FileConfiguration getDatas1x() {
+	        return mobnammx;
+	    }
+
+	    public void saveDatas1x() {
+	        try {
+	        	mobnammx.save(mobnamfx);
+	        } catch (IOException e) {
+	            Bukkit.getServer().getLogger().severe(ChatColor.RED + "Could not save x.yml");
+	        }
+	    }
+
+	    public void reloadDatas1x() {
+	    	mobnammx = YamlConfiguration.loadConfiguration(mobnamfx);
+	    } 
+	
 	/*
 	@EventHandler
     public void OnInventoryOpen(org.bukkit.event.inventory. e) {
