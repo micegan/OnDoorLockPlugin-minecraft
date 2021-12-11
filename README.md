@@ -1,7 +1,7 @@
 Plugin, that makes doors lockable using tripwire hook.
 Door locks once player press left click on door by holding tripwire hook in main hand, hook itself would get enchanted, so it would be easy to understand, that it is used for a door.
 
-All doors are getting unlocked on server restart, i was too lazy to add the funkin' saving to the .yml file
+All doors are no longer getting unlocked on server restart, i was too lazy to add the funkin' saving to the .yml file
 
 Donation link :): https://ko-fi.com/micegan
 
